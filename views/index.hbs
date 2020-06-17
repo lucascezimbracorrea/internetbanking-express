@@ -6,17 +6,14 @@
 
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
-    <input type="number" id="depositValue" name="depositValue" />
+    <input type="number" id="value" name="value" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
-    <br/>
-    <br/>   
-    <input type="number" id="withdrawValue" name="withdrawValue" />
     <button type="button" onclick="verifyBalance($(this))">Fazer saque</button>
 </form>
 
 <script>
     function deposit (button) {
-        var depositValue = document.getElementById("depositValue").value;
+        var depositValue = document.getElementById("value").value;
 
         if (!depositValue || depositValue < 0) {
             alert("O valor de depósito deve ser maior que zero");
@@ -30,19 +27,19 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                $("#depositValue").val("");
+                $("#value").val("");
                 $("#spanBalance").text(data.newAccountBallance); 
                 alert(data.message);
             },
             error: function (data) {
-                $("#depositValue").val("");
+                $("#value").val("");
                 alert(data);
             }
         })
     }
     
     function verifyBalance (button) {
-        var withdrawValue = parseFloat(document.getElementById("withdrawValue").value)
+        var withdrawValue = parseFloat(document.getElementById("value").value)
         if(!withdrawValue || withdrawValue < 0) {
             alert("Você deve informar um valor maior que zero!");
             return false;
@@ -56,7 +53,7 @@
                 withdraw(data.accountBalance, withdrawValue);
             },
             error: function (data) {
-                $("#depositValue").val("");
+                $("#value").val("");
                 alert(data);
             }
         })
@@ -74,12 +71,12 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                $("#withdrawValue").val("");
+                $("#value").val("");
                 $("#spanBalance").text(data.newAccountBallance); 
                 alert(data.message);
             },
             error: function (data) {
-                $("#withdrawValue").val("");
+                $("#value").val("");
                 alert(data);
             }
         })

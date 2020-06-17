@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 /* GET add deposit. */
 router.get('/deposit', function(req, res) {
   try {    
-    accountBalance += parseFloat(req.query.depositValue);
+    accountBalance += parseFloat(req.query.value);
     console.log(accountBalance);
     
     res.status(200).send({newAccountBallance: accountBalance, message: "Depósito realizado com sucesso"});
@@ -22,7 +22,7 @@ router.get('/deposit', function(req, res) {
 
 router.get('/withdraw', function(req, res) {
   try {    
-    accountBalance -= parseFloat(req.query.withdrawValue);
+    accountBalance -= parseFloat(req.query.value);
     console.log(accountBalance);
     
     res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
