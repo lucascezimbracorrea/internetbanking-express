@@ -7,7 +7,10 @@
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
     <input type="number" id="depositValue" name="depositValue" />
-    <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <button type="button" onclick="deposit($(this))">Fazer depósito</button><br><br><br>
+
+    <input type="number" id="saqueValue" name="saqueValue" />
+    <button type="button" onclick="saque($(this))">Fazer saque</button>
 </form>
 
 <script>
@@ -32,6 +35,32 @@
             },
             error: function (data) {
                 $("#depositValue").val("");
+                alert(data);
+            }
+        })
+    }
+
+    function saque (button) {
+        var saqueValue = document.getElementById("saqueValue").value;
+
+        if (!saqueValue || saqueValue < 0) {
+            alert("O valor de depóstio deve ser maior que zero");
+            return false;
+        }
+
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#saqueValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#saqueValue").val("");
                 alert(data);
             }
         })
