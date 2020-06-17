@@ -20,4 +20,16 @@ router.get('/deposit', function(req, res) {
   }
 });
 
+/* GET add saque. */
+router.get('/saque', function(req, res) {
+  try {    
+    accountBalance -= parseFloat(req.query.saqueValue);
+    console.log(accountBalance);
+    
+    res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
+  } catch (error) {
+    res.status(400).send("Não foi possível realizar esse saque. Por favor tente mais tarde");
+  }
+});
+
 module.exports = router;
