@@ -19,5 +19,18 @@ router.get('/deposit', function(req, res) {
     res.status(400).send("Não foi possível realizar esse depósito. Por favor tente mais tarde");
   }
 });
+router.get('/saldo', function(req, res) {
+  res.status(200).send({Ballance: accountBalance});
+});
+router.get('/saque', function(req, res) {
+  try {    
+    accountBalance -= parseFloat(req.query.SaqueValue);
+    console.log(accountBalance);
+    
+    res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
+  } catch (error) {
+    res.status(400).send("Não foi possível realizar esse Saque. Por favor tente mais tarde");
+  }
+});
 
 module.exports = router;
