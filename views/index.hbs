@@ -8,6 +8,10 @@
 
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <br/>
+    <br/>   
+    <input type="number" id="withdrawValue" name="withdrawValue" />
+    <button type="button" onclick="verifyBalance($(this))">Fazer saque</button>
 </form>
 
 <script>
@@ -15,7 +19,7 @@
         var depositValue = document.getElementById("depositValue").value;
 
         if (!depositValue || depositValue < 0) {
-            alert("O valor de depóstio deve ser maior que zero");
+            alert("O valor de depósito deve ser maior que zero");
             return false;
         }
 
@@ -32,6 +36,50 @@
             },
             error: function (data) {
                 $("#depositValue").val("");
+                alert(data);
+            }
+        })
+    }
+    
+    function verifyBalance (button) {
+        var withdrawValue = parseFloat(document.getElementById("withdrawValue").value)
+        if(!withdrawValue || withdrawValue < 0) {
+            alert("Você deve informar um valor maior que zero!");
+            return false;
+        }
+        $.ajax({
+            url: '/balance',
+            type: 'GET',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                withdraw(data.accountBalance, withdrawValue);
+            },
+            error: function (data) {
+                $("#depositValue").val("");
+                alert(data);
+            }
+        })
+    }
+
+    function withdraw (balance, withdrawValue) {
+        if(withdrawValue > balance){
+            alert('Saldo insuficiente!');
+            return false;
+        }
+        $.ajax({
+            url: '/withdraw',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#withdrawValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#withdrawValue").val("");
                 alert(data);
             }
         })
