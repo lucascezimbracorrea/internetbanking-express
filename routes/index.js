@@ -20,4 +20,19 @@ router.get('/deposit', function(req, res) {
   }
 });
 
+/* GET add saque. */
+router.get('/saque', function(req, res) {
+  try {
+    if(req.query.depositValue> accountBalance){
+      res.status(200).send({newAccountBallance: accountBalance, message: "o valor do saque deve ser menor que o valor do saldo"});
+    }else   
+    accountBalance -= parseFloat(req.query.depositValue);
+    console.log(accountBalance);
+    
+    res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
+  } catch (error) {
+    res.status(400).send("Não foi possível realizar esse Saque. Por favor tente mais tarde");
+  }
+});
+
 module.exports = router;
