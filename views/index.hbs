@@ -8,6 +8,11 @@
 
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+
+    <input type="number" id="saqueValue" name="saqueValue" />
+    <button type="button" onclick="sacar($(this))">Fazer Saque</button>
+    <h3>Movimento:</h3>
+    <p><span id="spanMovimento">{{amov}}</span></p>
 </form>
 
 <script>
@@ -28,10 +33,36 @@
             success: function (data) {
                 $("#depositValue").val("");
                 $("#spanBalance").text(data.newAccountBallance); 
+                $("#spanMovimento").html(data.newAmov);
                 alert(data.message);
             },
             error: function (data) {
                 $("#depositValue").val("");
+                alert(data);
+            }
+        })
+    }    
+    function sacar (button) {
+        var saqueValue = document.getElementById("saqueValue").value;
+
+        if (!saqueValue || saqueValue < 0) {
+            alert("O valor de saque deve ser maior que zero");
+            return false;
+        }
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#saqueValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                $("#spanMovimento").html(data.newAmov); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#saqueValue").val("");
                 alert(data);
             }
         })
