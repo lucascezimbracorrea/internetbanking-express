@@ -6,13 +6,16 @@
 
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
-    <input type="number" id="depositValue" name="depositValue" />
-    <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <div>
+        <input type="number" id="vlmovimento" name="vlmovimento" />
+        <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+        <button type="button" onclick="saque($(this))">Fazer saque</button>
+    </div>
 </form>
 
 <script>
     function deposit (button) {
-        var depositValue = document.getElementById("depositValue").value;
+        var depositValue = document.getElementById("vlmovimento").value;
 
         if (!depositValue || depositValue < 0) {
             alert("O valor de depóstio deve ser maior que zero");
@@ -26,14 +29,41 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                $("#depositValue").val("");
+                $("#vlmovimento").val("");
                 $("#spanBalance").text(data.newAccountBallance); 
                 alert(data.message);
             },
             error: function (data) {
-                $("#depositValue").val("");
+                $("#vlmovimento").val("");
                 alert(data);
             }
         })
     }
+
+    function saque (button) {
+        var saqueValue = document.getElementById("vlmovimento").value;
+
+        if (!saqueValue || saqueValue < 0) {
+            alert("O valor de saque deve ser maior que zero");
+            return false;
+        }
+
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#vlmovimento").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#vlmovimento").val("");
+                alert(data);
+            }
+        })
+    }
+
 </script>
