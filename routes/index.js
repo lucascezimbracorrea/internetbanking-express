@@ -20,4 +20,22 @@ router.get('/deposit', function(req, res) {
   }
 });
 
+
+/* GET add deposit. */
+router.get('/saque', function(req, res) {
+  try {    
+
+    if(req.query.saque > accountBalance){
+      res.status(200).send({message:"Voce não possui saldo"})
+    }else{
+      accountBalance -= parseFloat(req.query.saque);
+      console.log(accountBalance);
+  }
+    res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
+  } catch (error) {
+    res.status(400).send("Não foi possível realizar esse depósito. Por favor tente mais tarde");
+  }
+});
+
+
 module.exports = router;
