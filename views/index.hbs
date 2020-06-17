@@ -1,17 +1,51 @@
 
-<form id="form" name="form" action="/deposit">
-    <h1>{{title}}</h1>
+<div class="container">
 
-    <p>Bem vindo to Internet Banking</p>
+  <div class="row">
+    <div class="col-md-12">
+      <h1>{{title}}</h1>
+      <p>Bem vindo to Internet Banking</p>
+      <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
+    </div>
+  </div>
 
-    <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Depósito</h5>
+          <form id="form" name="form" action="/deposit">
+          <div class="input-group mb-3">
+            <input  type="number" id="depositValue" name="depositValue" class="form-control" placeholder="Informe o Valor" aria-label="Informe o Valor" aria-describedby="button-depoisto">
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary" type="button" onclick="deposit($(this))" id="button-depoisto">Depositar</button>
+            </div>
+          </div>
+        </form>
+        </div>
+        </div>
+      </div>
 
-    <input type="number" id="depositValue" name="depositValue" />
-    <button type="button" onclick="deposit($(this))">Fazer depósito</button>
-</form>
+    <div class="col-md-3">
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Saque</h5>
+          <form id="formSaque" name="formSaque" action="/saque">
+          <div class="input-group mb-3">
+            <input  type="number" id="saqueValue" name="saqueValue" class="form-control" placeholder="Informe o Valor" aria-label="Informe o Valor" aria-describedby="button-saque">
+            <div class="input-group-append">
+              <button class="btn btn-outline-danger" type="button" onclick="saque($(this))" id="button-saque">Sacar</button>
+            </div>
+          </div>
+        </form>
+        </div>
+        </div>
+      </div>
+    </div>
 
 <script>
     function deposit (button) {
+
         var depositValue = document.getElementById("depositValue").value;
 
         if (!depositValue || depositValue < 0) {
@@ -27,7 +61,7 @@
             processData: false,
             success: function (data) {
                 $("#depositValue").val("");
-                $("#spanBalance").text(data.newAccountBallance); 
+                $("#spanBalance").text(data.newAccountBallance);
                 alert(data.message);
             },
             error: function (data) {
@@ -36,4 +70,38 @@
             }
         })
     }
+
+    function saque (button) {
+        var saqueValue = document.getElementById("saqueValue").value;
+        console.log(saqueValue);
+
+        if (!saqueValue || saqueValue < 0) {
+            alert("O valor de saque deve ser maior que zero");
+            return false;
+        }
+
+        if (saqueValue > {{accountBalance}})
+        {
+          alert("Saldo insuficiente!");
+          return false;
+        }
+
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#formSaque')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#saqueValue").val("");
+                $("#spanBalance").text(data.newAccountBallance);
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#saqueValue").val("");
+                alert(data);
+            }
+        })
+    }
+
 </script>
