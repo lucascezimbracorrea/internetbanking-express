@@ -6,16 +6,17 @@
 
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
-    <input type="number" id="depositValue" name="depositValue" />
+    <input type="number" id="value" name="value" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <button type="button" onclick="verifyBalance($(this))">Fazer saque</button>
 </form>
 
 <script>
     function deposit (button) {
-        var depositValue = document.getElementById("depositValue").value;
+        var depositValue = document.getElementById("value").value;
 
         if (!depositValue || depositValue < 0) {
-            alert("O valor de depóstio deve ser maior que zero");
+            alert("O valor de depósito deve ser maior que zero");
             return false;
         }
 
@@ -26,12 +27,56 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                $("#depositValue").val("");
+                $("#value").val("");
                 $("#spanBalance").text(data.newAccountBallance); 
                 alert(data.message);
             },
             error: function (data) {
-                $("#depositValue").val("");
+                $("#value").val("");
+                alert(data);
+            }
+        })
+    }
+    
+    function verifyBalance (button) {
+        var withdrawValue = parseFloat(document.getElementById("value").value)
+        if(!withdrawValue || withdrawValue < 0) {
+            alert("Você deve informar um valor maior que zero!");
+            return false;
+        }
+        $.ajax({
+            url: '/balance',
+            type: 'GET',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                withdraw(data.accountBalance, withdrawValue);
+            },
+            error: function (data) {
+                $("#value").val("");
+                alert(data);
+            }
+        })
+    }
+
+    function withdraw (balance, withdrawValue) {
+        if(withdrawValue > balance){
+            alert('Saldo insuficiente!');
+            return false;
+        }
+        $.ajax({
+            url: '/withdraw',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#value").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#value").val("");
                 alert(data);
             }
         })

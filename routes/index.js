@@ -11,12 +11,31 @@ router.get('/', function(req, res, next) {
 /* GET add deposit. */
 router.get('/deposit', function(req, res) {
   try {    
-    accountBalance += parseFloat(req.query.depositValue);
+    accountBalance += parseFloat(req.query.value);
     console.log(accountBalance);
     
     res.status(200).send({newAccountBallance: accountBalance, message: "Depósito realizado com sucesso"});
   } catch (error) {
     res.status(400).send("Não foi possível realizar esse depósito. Por favor tente mais tarde");
+  }
+});
+
+router.get('/withdraw', function(req, res) {
+  try {    
+    accountBalance -= parseFloat(req.query.value);
+    console.log(accountBalance);
+    
+    res.status(200).send({newAccountBallance: accountBalance, message: "Saque realizado com sucesso"});
+  } catch (error) {
+    res.status(400).send("Não foi possível realizar esse depósito. Por favor tente mais tarde");
+  }
+});
+
+router.get('/balance', function(req, res){
+  try{
+    res.status(200).send({ accountBalance: accountBalance });
+  } catch (error) {
+    res.status(400).send("Não foi possível consultar o saldo!");
   }
 });
 
