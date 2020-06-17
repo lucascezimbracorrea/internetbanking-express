@@ -1,4 +1,3 @@
-
 <form id="form" name="form" action="/deposit">
     <h1>{{title}}</h1>
 
@@ -8,10 +7,13 @@
 
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+
+    <input type="number" id="saque" name="saque" />
+    <button id="btnSaque" type="button">Saque</button>
 </form>
 
 <script>
-    function deposit (button) {
+    function deposit(button) {
         var depositValue = document.getElementById("depositValue").value;
 
         if (!depositValue || depositValue < 0) {
@@ -27,7 +29,7 @@
             processData: false,
             success: function (data) {
                 $("#depositValue").val("");
-                $("#spanBalance").text(data.newAccountBallance); 
+                $("#spanBalance").text(data.newAccountBallance);
                 alert(data.message);
             },
             error: function (data) {
@@ -36,4 +38,33 @@
             }
         })
     }
+
+
+    function saque() {
+        var saqueValue = document.getElementById("saque").value;
+
+        if ( saqueValue <= 0) {
+            alert("O valor do saque deve ser maior que zero");
+            return false;
+        }
+
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#saque").val("");
+                $("#spanBalance").text(data.newAccountBallance);
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#depositValue").val("");
+                alert(data.message);
+            }
+        })
+    }
+
+    document.getElementById("btnSaque").addEventListener("click",saque )
 </script>
