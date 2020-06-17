@@ -2,23 +2,23 @@
 <form id="form" name="form" action="/deposit">
     <h1>{{title}}</h1>
 
-    <p>Bem vindo to Internet Banking</p>
+    <p>Bem vindo ao Internet Banking</p>
 
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <button type="button" onclick="sak($(this))">Realizar Saque</button>
 </form>
 
 <script>
     function deposit (button) {
         var depositValue = document.getElementById("depositValue").value;
 
-        if (!depositValue || depositValue < 0) {
+        if (!depositValue || depositValue <= 0) {
             alert("O valor de depóstio deve ser maior que zero");
             return false;
         }
-
         $.ajax({
             url: '/deposit',
             type: 'GET',
@@ -33,6 +33,31 @@
             error: function (data) {
                 $("#depositValue").val("");
                 alert(data);
+            }
+        })
+    }
+    function sak (button) {
+        var sakValue = document.getElementById("depositValue").value;
+
+        if (!sakValue || sakValue <= 0) {
+            alert("O valor de depóstio deve ser maior que zero");
+            return false;
+        }
+
+        $.ajax({
+            url: '/sak',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#depositValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#depositValue").val("");
+                alert(data.responseJSON.message);
             }
         })
     }
