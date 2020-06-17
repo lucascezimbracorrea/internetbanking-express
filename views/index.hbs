@@ -1,16 +1,55 @@
-
-<form id="form" name="form" action="/deposit">
-    <h1>{{title}}</h1>
+ <h1>{{title}}</h1>
 
     <p>Bem vindo to Internet Banking</p>
 
     <h3>Seu saldo: <span id="spanBalance">{{accountBalance}}</span></h3>
 
+<form id="form" name="form" action="/deposit">
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+
+</form>
+<form id="form2" name="form2" action="/saque">
+
+     <input type="number" id="SaqueValue" name="SaqueValue" />
+    <button type="button" onclick="saque($(this))">Saque depósito</button>
 </form>
 
 <script>
+    let saldo =0;
+     $.ajax({
+            url: '/saldo',
+            type: 'GET',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                saldo = data.Ballance;
+            }});
+
+     function saque (button) {
+        var SaqueValue = document.getElementById("SaqueValue").value;
+
+        if ( saldo < SaqueValue ) {
+            alert("voce não possui valor para o saque");
+            return false;
+        }
+        $.ajax({
+            url: '/saque',
+            type: 'GET',
+            data: jQuery($('#form2')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#SaqueValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#SaqueValue").val("");
+                alert(data);
+            }
+        })
+    }
     function deposit (button) {
         var depositValue = document.getElementById("depositValue").value;
 
