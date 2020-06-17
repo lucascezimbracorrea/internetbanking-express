@@ -8,6 +8,7 @@
 
     <input type="number" id="depositValue" name="depositValue" />
     <button type="button" onclick="deposit($(this))">Fazer depósito</button>
+    <button type="button" onclick="withdraw($(this))">Fazer saque</button>
 </form>
 
 <script>
@@ -15,7 +16,7 @@
         var depositValue = document.getElementById("depositValue").value;
 
         if (!depositValue || depositValue < 0) {
-            alert("O valor de depóstio deve ser maior que zero");
+            alert("O valor de depósito deve ser maior que zero");
             return false;
         }
 
@@ -32,7 +33,33 @@
             },
             error: function (data) {
                 $("#depositValue").val("");
-                alert(data);
+                alert(data.message);
+            }
+        })
+    }
+
+    function withdraw (button) {
+        var withdrawValue = document.getElementById("depositValue").value; // mesmo botao
+
+        if (!withdrawValue || withdrawValue < 0) {
+            alert("O valor de saque deve ser maior que zero");
+            return false;
+        }
+
+        $.ajax({
+            url: '/withdraw',
+            type: 'GET',
+            data: jQuery($('#form')).serialize(),
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#depositValue").val("");
+                $("#spanBalance").text(data.newAccountBallance); 
+                alert(data.message);
+            },
+            error: function (data) {
+                $("#depositValue").val("");
+                alert(data.message);
             }
         })
     }
