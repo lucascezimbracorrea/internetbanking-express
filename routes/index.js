@@ -5,7 +5,10 @@ var accountBalance = 100;
 var Pessoas = [];
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express', accountBalance: accountBalance });
+  res.render('index', { title: 'Express' });
+});
+router.get('/pessoas', function (req, res, next) {
+  res.status(200).send({ pessoas: Pessoas});
 });
 
 /* GET add deposit. */
@@ -61,13 +64,9 @@ router.get('/cadPessoa', function (req, res) {
 router.get('/verifyPessoa', function (req, res) {
   try {
     if (Array.isArray(Pessoas) && Pessoas.length) {
-      var ids = [];
-      for (i = 0; i < Pessoas.length; i += 1) {
-        ids.push(Pessoas[i].id);
-      }
-      res.status(200).send({ cod: 0, ids: ids });
+      res.status(200).send({ cod: 0, pessoa: Pessoas });
     }else
-      res.status(200).send({ cod: 1 });
+      res.status(200).send({ cod: 1 ,pessoa:[]});
     }catch (error) {
       res.status(400).send("Não foi possível realizar esse depósito. Por favor tente mais tarde");
     }

@@ -1,57 +1,94 @@
-<h1>{{title}}</h1>
-
-<p>Bem vindo to Internet Banking</p>
-
+<h1>Bem vindo to Internet Banking</h1>
 <div id="Pessoas">
     <table id="pes" class="table">
     </table>
 
 </div>
+<div class="row">
+    <div class="col-sm">
+        <h2>Cadastrar Pessoa:</h2>
+        <input type="hidden" value="{{pesso}}" name="pesso" id="pesso" />
+        <form id="form3" name="form3" action="/cadPessoa">
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" id="nome" name="nome" />
+            </div>
+            <div class="form-group">
+                <label>Saldo:</label>
+                <input type="number" id="saldo" name="saldo" />
+            </div>
+            <div class="form-group">
+                <label>CPF:</label>
+                <input type="number" id="CPF" name="CPF" />
+            </div>
 
-<form id="form" name="form" action="/deposit">
-    <div class="form-group">
-        <label>ID PESSOA:</label>
-        <input type="number" id="valor" name="valor" />
+            <button type="button" onclick="cadastro($(this))" class="btn btn-primary mb-2 bot">Cadastrar</button>
+        </form>
     </div>
-    <div class="form-group">
-        <label>Valor:</label>
-        <input type="number" id="depositValue" name="depositValue" />
-    </div>
-    <button type="button" onclick="deposit2($(this))" class="btn btn-primary mb-2">Fazer depósito</button>
+    <div class="col-sm">
+        <h2>Deposito Aqui:</h2>
+        <form id="form" name="form" action="/deposit">
+            <div class="form-group">
+                <label>ID PESSOA:</label>
+                <input type="number" id="valor" name="valor" />
+            </div>
+            <div class="form-group">
+                <label>Valor:</label>
+                <input type="number" id="depositValue" name="depositValue" />
+            </div>
+            <button type="button" onclick="deposit2($(this))" class="btn btn-primary mb-2 bot">Fazer depósito</button>
 
-</form>
-<form id="form2" name="form2" action="/saque">
-    <div class="form-group">
-        <label>ID PESSOA:</label>
-        <input type="number" id="valors" name="valors" />
+        </form>
     </div>
-    <div class="form-group">
-        <label>Valor:</label>
-        <input type="number" id="SaqueValue" name="SaqueValue" />
+    <div class="col-sm">
+        <h2>Saque Aqui:</h2>
+        <form id="form2" name="form2" action="/saque">
+            <div class="form-group">
+                <label>ID PESSOA:</label>
+                <input type="number" id="valors" name="valors" />
+            </div>
+            <div class="form-group">
+                <label>Valor:</label>
+                <input type="number" id="SaqueValue" name="SaqueValue" />
+            </div>
+            <button type="button" onclick="saque2($(this))" class="btn btn-primary mb-2 bot">Saque depósito</button>
+        </form>
     </div>
-    <button type="button" onclick="saque2($(this))" class="btn btn-primary mb-2">Saque depósito</button>
-</form>
-<p>Cadastrar Pessoa</p>
-
-<form id="form3" name="form3" action="/cadPessoa">
-    <div class="form-group">
-        <label>Nome:</label>
-        <input type="text" id="nome" name="nome" />
-    </div>
-    <div class="form-group">
-        <label>Saldo:</label>
-        <input type="number" id="saldo" name="saldo" />
-    </div>
-    <div class="form-group">
-        <label>CPF:</label>
-        <input type="number" id="CPF" name="CPF" />
-    </div>
-
-    <button type="button" onclick="cadastro($(this))" class="btn btn-primary mb-2">Cadastrar</button>
-</form>
+</div>
 <script>
     let saldo = 0;
     let ids = [];
+    let Pessoas = [];
+    $.ajax({
+        url: '/pessoas',
+        type: 'GET',
+        async: false,
+        success: function (data) {
+            let count = 1;
+            if (ids.length != 0)
+                count = 0
+            Pessoas = data.pessoas;
+            if (typeof Pessoas !== 'undefined' && Pessoas.length > 0) {
+                $("#pes").html("<tr>"
+                    + "<th scope='col'>ID:</th>"
+                    + "<th scope='col'>Nome:</th>"
+                    + "<th scope='col'>Saldo:</th>"
+                    + "<th scope='col'>CPF:</th></tr>");
+                for (i = 0; i < Pessoas.length; i += 1) {
+                    $("#pes").append("<tr>"
+                        + "<td scope='row'>" + Pessoas[i].id + "</td>"
+                        + "<td>" + Pessoas[i].nome + "</td>"
+                        + "<td>"
+                        + Pessoas[i].saldo + "</td>"
+                        + "<td>" + Pessoas[i].CPF + "</td></tr>");
+                    if (count)
+                        ids.push(Pessoas[i].id);
+                }
+            }
+            else
+                $("#pes").html("<h3>Nenhuma Pessoa Cadastrada!</h3>");
+        }
+    });
     $.ajax({
         url: '/saldo',
         type: 'GET',
@@ -87,9 +124,9 @@
                 if (ids.length == 0) {
                     $("#pes").html("<tr>"
                         + "<th scope='col'>ID:</th>"
-                    + "<th scope='col'>Nome:</th>"
-                    + "<th scope='col'>Saldo:</th>"
-                    + "<th scope='col'>CPF:</th></tr>");
+                        + "<th scope='col'>Nome:</th>"
+                        + "<th scope='col'>Saldo:</th>"
+                        + "<th scope='col'>CPF:</th></tr>");
                 }
                 var P = data.pessoa;
                 $("#pes").append("<tr>"
