@@ -43,6 +43,10 @@ label{
   background-color:#724848;
   border-color: #724848;
 }
+.bot:hover{
+  background-color:#b37272;
+  border-color: #b37272;
+}
 th{
   background-color:#724848;
   font-size: 20px;
